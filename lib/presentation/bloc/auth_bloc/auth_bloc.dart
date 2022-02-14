@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:rtu_mirea_app/domain/usecases/get_auth_token.dart';
 import 'package:rtu_mirea_app/domain/usecases/get_user_data.dart';
 import 'package:rtu_mirea_app/domain/usecases/log_in.dart';
@@ -60,7 +59,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 "Ошибка при авторизации. Повторите попытку позже")),
         (res) {
           emit(LogInSuccess(token: res));
-          FirebaseAnalytics.instance.logLogin();
         },
       );
     }

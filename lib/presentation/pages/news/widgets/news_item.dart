@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:rtu_mirea_app/common/utils/strapi_utils.dart';
 import 'package:rtu_mirea_app/domain/entities/news_item.dart';
@@ -25,9 +24,6 @@ class NewsItemWidget extends StatelessWidget {
         context.router.push(NewsDetailsRoute(
           newsItem: newsItem,
         ));
-        FirebaseAnalytics.instance.logEvent(name: 'view_news', parameters: {
-          'news_title': newsItem.title,
-        });
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 24, left: 16, right: 16),

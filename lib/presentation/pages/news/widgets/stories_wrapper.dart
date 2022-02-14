@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:dismissible_page/dismissible_page.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:rtu_mirea_app/common/utils/utils.dart';
 import 'package:story/story_page_view/story_page_view.dart';
@@ -43,10 +42,6 @@ class _StoriesWrapperState extends State<StoriesWrapper> {
             itemBuilder: (context, pageIndex, storyIndex) {
               if (pageIndex != _prevStoryIndex) {
                 _prevStoryIndex = pageIndex;
-                FirebaseAnalytics.instance
-                    .logEvent(name: 'view_story', parameters: {
-                  'story_title': widget.stories[pageIndex].title,
-                });
               }
               final author = widget.stories[pageIndex].author;
               final page = widget.stories[pageIndex].pages[storyIndex];

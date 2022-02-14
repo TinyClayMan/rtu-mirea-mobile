@@ -35,12 +35,7 @@ flutter build appbundle
 flutter doctor
 ```
 
-## Конфигурация Firebase Analytics и Crashlytics
-1. Зарегистрируйте приложение в [Firebase](https://console.firebase.google.com/).
-1. Выполните шаги для генерации `firebase_options.dart` файла с помощью [FlutterFire CLI](https://firebase.flutter.dev/docs/cli).
-2. Firebase Analytics для Android не поддерживает Dart-only конфигурацию. Как только ваше приложение для Android будет зарегистрировано в Firebase, загрузите файл конфигурации с консоли Firebase (файл называется `google-services.json`). Добавьте этот файл в каталог `android/app`.
-3. Проект готов для использования с Firebase Analytics и Crashlytics.
-
+## Firebase выключен в этом форке
 ## При ошибках
 **Исключения платформы**
 1. flutter clean
