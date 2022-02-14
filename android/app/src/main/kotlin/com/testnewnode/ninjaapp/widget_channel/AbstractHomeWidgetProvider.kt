@@ -1,4 +1,4 @@
-package ninja.mirea.mireaapp.widget_channel
+package com.testnewnode.ninjaapp.widget_channel
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider

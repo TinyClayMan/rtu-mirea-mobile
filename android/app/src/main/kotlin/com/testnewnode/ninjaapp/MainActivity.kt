@@ -1,4 +1,4 @@
-package ninja.mirea.mireaapp
+package com.testnewnode.ninjaapp
 
 import android.os.Bundle;
 import android.os.PersistableBundle

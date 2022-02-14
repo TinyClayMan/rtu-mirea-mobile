@@ -1,11 +1,11 @@
-package ninja.mirea.mireaapp.widget_channel
+package com.testnewnode.ninjaapp.widget_channel
 
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
 import kotlinx.serialization.json.Json
-import ninja.mirea.mireaapp.R
+import com.testnewnode.ninjaapp.R
 import java.util.*
 
 class HomeFactory2 internal constructor(val context: Context, val intent: Intent) :

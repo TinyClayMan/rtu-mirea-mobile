@@ -1,11 +1,11 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ninja.mirea.mireaapp">
+    package="com.testnewnode.ninjaapp">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
    <application
-        android:label="Ninja Mirea"
+        android:label="Newnode Ninja"
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -55,12 +55,12 @@
         </receiver>
 
        <!-- Used for Background Work -->
-       <receiver android:name="ninja.mirea.mireaapp.widget_channel.HomeWidgetBackgroundReceiver">
+       <receiver android:name="com.testnewnode.ninjaapp.widget_channel.HomeWidgetBackgroundReceiver">
            <intent-filter>
                <action android:name="es.antonborri.home_widget.action.BACKGROUND" />
            </intent-filter>
        </receiver>
-       <service android:name="ninja.mirea.mireaapp.widget_channel.HomeWidgetBackgroundService"
+       <service android:name="com.testnewnode.ninjaapp.widget_channel.HomeWidgetBackgroundService"
            android:permission="android.permission.BIND_JOB_SERVICE" android:exported="true"/>
 
         <!-- Don't delete the meta-data below.

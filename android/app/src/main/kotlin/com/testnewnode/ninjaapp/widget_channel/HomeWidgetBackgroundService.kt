@@ -1,4 +1,4 @@
-package ninja.mirea.mireaapp.widget_channel
+package com.testnewnode.ninjaapp.widget_channel
 
 import android.content.Context
 import android.content.Intent

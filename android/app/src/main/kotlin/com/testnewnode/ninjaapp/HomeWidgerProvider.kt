@@ -1,4 +1,4 @@
-package ninja.mirea.mireaapp
+package com.testnewnode.ninjaapp
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -11,11 +11,11 @@ import android.view.View
 import android.widget.RemoteViews
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
-import ninja.mirea.mireaapp.widget_channel.AbstractHomeWidgetProvider
-import ninja.mirea.mireaapp.widget_channel.HomeWidgetLaunchIntent
-import ninja.mirea.mireaapp.widget_channel.ScheduleModel
-import ninja.mirea.mireaapp.widget_channel.UpdateWidgetService
 import java.text.SimpleDateFormat
+import com.testnewnode.ninjaapp.widget_channel.AbstractHomeWidgetProvider
+import com.testnewnode.ninjaapp.widget_channel.HomeWidgetLaunchIntent
+import com.testnewnode.ninjaapp.widget_channel.ScheduleModel
+import com.testnewnode.ninjaapp.widget_channel.UpdateWidgetService
 import java.util.*
 
 
