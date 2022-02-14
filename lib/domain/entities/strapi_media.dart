@@ -13,8 +13,8 @@ class StrapiMedia extends Equatable {
   });
 
   final String name;
-  final String alternativeText;
-  final String caption;
+  final String? alternativeText;
+  final String? caption;
   final int width;
   final int height;
   final Formats formats;
@@ -22,18 +22,7 @@ class StrapiMedia extends Equatable {
   final String url;
 
   @override
-  List<Object> get props {
-    return [
-      name,
-      alternativeText,
-      caption,
-      width,
-      height,
-      formats,
-      size,
-      url,
-    ];
-  }
+  List<Object> get props => [name, width, height, formats, size, url];
 }
 
 class Formats extends Equatable {
@@ -57,7 +46,6 @@ class StrapiImage extends Equatable {
   const StrapiImage({
     required this.url,
     required this.name,
-    required this.path,
     required this.size,
     required this.width,
     required this.height,
@@ -65,13 +53,10 @@ class StrapiImage extends Equatable {
 
   final String url;
   final String name;
-  final dynamic path;
   final double size;
   final int width;
   final int height;
 
   @override
-  List<Object> get props {
-    return [url, name, path, size, width, height];
-  }
+  List<Object> get props => [url, name, size, width, height];
 }

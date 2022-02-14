@@ -10,20 +10,18 @@ import 'package:url_launcher/url_launcher.dart';
 import 'widgets/member_info.dart';
 
 class AboutAppPage extends StatelessWidget {
-  static const String routeName = '/profile/about_app';
-
   const AboutAppPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'О приложении',
-          style: DarkTextTheme.title,
-        ),
+        title: const Text("О приложении"),
+        backgroundColor: DarkThemeColors.background01,
       ),
+      backgroundColor: DarkThemeColors.background01,
       body: SafeArea(
+        bottom: false,
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),

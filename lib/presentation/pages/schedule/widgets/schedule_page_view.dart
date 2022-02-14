@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rtu_mirea_app/common/calendar.dart';
+import 'package:rtu_mirea_app/common/utils/utils.dart';
 import 'package:rtu_mirea_app/domain/entities/lesson.dart';
 import 'package:rtu_mirea_app/domain/entities/schedule.dart';
 import 'package:rtu_mirea_app/domain/entities/schedule_settings.dart';
@@ -13,26 +13,24 @@ import 'package:intl/intl.dart';
 import 'lesson_card.dart';
 
 class SchedulePageView extends StatefulWidget {
-  final Schedule schedule;
-
   const SchedulePageView({Key? key, required this.schedule}) : super(key: key);
+
+  final Schedule schedule;
 
   @override
   _SchedulePageViewState createState() => _SchedulePageViewState();
 }
 
 class _SchedulePageViewState extends State<SchedulePageView> {
-  late int _selectedWeek;
-  late int _selectedPage;
-  late DateTime _selectedDay;
-  late final PageController _controller;
+  static final DateTime _firstCalendarDay = CalendarUtils.getSemesterStart();
+  static final DateTime _lastCalendarDay = CalendarUtils.getSemesterLastDay();
 
   late CalendarFormat _calendarFormat;
-  DateTime _focusedDay = _validateFocusDay(DateTime.now());
-
-  final DateTime _firstCalendarDay = Calendar.getSemesterStart();
-  final DateTime _lastCalendarDay =
-      DateTime.utc(2021, 12, 19); // TODO: create method for it
+  late final PageController _controller;
+  late DateTime _focusedDay;
+  late DateTime _selectedDay;
+  late int _selectedPage;
+  late int _selectedWeek;
 
   static DateTime _validateFocusDay(DateTime newDate) {
     final DateTime _lastCalendarDay =
@@ -49,14 +47,26 @@ class _SchedulePageViewState extends State<SchedulePageView> {
     super.initState();
 
     // initialize data
+    _focusedDay = _validateDayInRange(DateTime.now());
     _selectedPage = DateTime.now().difference(_firstCalendarDay).inDays;
     _controller = PageController(initialPage: _selectedPage);
-    _selectedDay = DateTime.now();
-    _selectedWeek = Calendar.getCurrentWeek();
+    _selectedDay = _validateDayInRange(DateTime.now());
+    _selectedWeek = CalendarUtils.getCurrentWeek();
     _calendarFormat = CalendarFormat.values[
         (BlocProvider.of<ScheduleBloc>(context).state as ScheduleLoaded)
             .scheduleSettings
             .calendarFormat];
+  }
+
+  /// check if current date is before [_lastCalendarDay] and after [_firstCalendarDay]
+  DateTime _validateDayInRange(DateTime newDate) {
+    if (newDate.isAfter(_lastCalendarDay)) {
+      return _lastCalendarDay;
+    } else if (newDate.isBefore(_firstCalendarDay)) {
+      return _firstCalendarDay;
+    } else {
+      return newDate;
+    }
   }
 
   List<List<Lesson>> _getLessonsByWeek(int week, Schedule schedule) {
@@ -89,8 +99,8 @@ class _SchedulePageViewState extends State<SchedulePageView> {
 
   List<Lesson> _getLessonsWithEmpty(List<Lesson> lessons, String group) {
     List<Lesson> formattedLessons = [];
-    if (ScheduleBloc.isCollegeGroup(group)) {
-      ScheduleBloc.collegeTimesStart.forEach((key, value) {
+    if (ScheduleUtils.isCollegeGroup(group)) {
+      ScheduleUtils.collegeTimesStart.forEach((key, value) {
         bool notEmpty = false;
         for (final lesson in lessons) {
           if (lesson.timeStart == key) {
@@ -104,7 +114,7 @@ class _SchedulePageViewState extends State<SchedulePageView> {
               name: '',
               rooms: const [],
               timeStart: key,
-              timeEnd: ScheduleBloc.collegeTimesEnd.keys.toList()[value - 1],
+              timeEnd: ScheduleUtils.collegeTimesEnd.keys.toList()[value - 1],
               weeks: const [],
               types: '',
               teachers: const [],
@@ -113,7 +123,7 @@ class _SchedulePageViewState extends State<SchedulePageView> {
         }
       });
     } else {
-      ScheduleBloc.universityTimesStart.forEach((key, value) {
+      ScheduleUtils.universityTimesStart.forEach((key, value) {
         bool notEmpty = false;
         for (final lesson in lessons) {
           if (lesson.timeStart == key) {
@@ -127,7 +137,8 @@ class _SchedulePageViewState extends State<SchedulePageView> {
               name: '',
               rooms: const [],
               timeStart: key,
-              timeEnd: ScheduleBloc.universityTimesEnd.keys.toList()[value - 1],
+              timeEnd:
+                  ScheduleUtils.universityTimesEnd.keys.toList()[value - 1],
               weeks: const [],
               types: '',
               teachers: const [],
@@ -244,7 +255,7 @@ class _SchedulePageViewState extends State<SchedulePageView> {
             CalendarFormat.week: 'Неделя'
           },
           eventLoader: (day) {
-            final int week = Calendar.getCurrentWeek(mCurrentDate: day);
+            final int week = CalendarUtils.getCurrentWeek(mCurrentDate: day);
             final int weekday = day.weekday - 1;
 
             var lessons = _getLessonsByWeek(week, widget.schedule);
@@ -266,14 +277,14 @@ class _SchedulePageViewState extends State<SchedulePageView> {
           onDaySelected: (selectedDay, focusedDay) {
             if (!isSameDay(_selectedDay, selectedDay)) {
               final int currentNewWeek =
-                  Calendar.getCurrentWeek(mCurrentDate: selectedDay);
+                  CalendarUtils.getCurrentWeek(mCurrentDate: selectedDay);
               // Call `setState()` when updating the selected day
               setState(() {
                 _selectedWeek = currentNewWeek;
                 _selectedPage =
                     selectedDay.difference(_firstCalendarDay).inDays;
                 _selectedDay = selectedDay;
-                _focusedDay = _validateFocusDay(focusedDay);
+                _focusedDay = _validateDayInRange(focusedDay);
                 _controller.jumpToPage(_selectedPage);
               });
             }
@@ -292,16 +303,16 @@ class _SchedulePageViewState extends State<SchedulePageView> {
           },
           onPageChanged: (focusedDay) {
             // No need to call `setState()` here
-            _focusedDay = _validateFocusDay(focusedDay);
+            _focusedDay = _validateDayInRange(focusedDay);
           },
           onHeaderTapped: (date) {
             final currentDate = DateTime.now();
             setState(() {
-              _focusedDay = _validateFocusDay(currentDate);
+              _focusedDay = _validateDayInRange(currentDate);
               _selectedDay = currentDate;
               _selectedPage = _selectedDay.difference(_firstCalendarDay).inDays;
               _selectedWeek =
-                  Calendar.getCurrentWeek(mCurrentDate: _selectedDay);
+                  CalendarUtils.getCurrentWeek(mCurrentDate: _selectedDay);
               _controller.jumpToPage(_selectedPage);
             });
           },
@@ -317,7 +328,7 @@ class _SchedulePageViewState extends State<SchedulePageView> {
                   crossAxisAlignment: WrapCrossAlignment.center,
                   runAlignment: WrapAlignment.center,
                   children: [
-                    for (int i = 1; i <= Calendar.kMaxWeekInSemester; i++)
+                    for (int i = 1; i <= CalendarUtils.kMaxWeekInSemester; i++)
                       ElevatedButton(
                         child: Text(i.toString()),
                         style: ElevatedButton.styleFrom(
@@ -328,10 +339,10 @@ class _SchedulePageViewState extends State<SchedulePageView> {
                         onPressed: () {
                           setState(() {
                             if (i == 1) {
-                              _selectedDay = Calendar.getDaysInWeek(
-                                  i)[Calendar.getSemesterStart().weekday - 1];
+                              _selectedDay = CalendarUtils.getDaysInWeek(i)[
+                                  CalendarUtils.getSemesterStart().weekday - 1];
                             } else {
-                              _selectedDay = Calendar.getDaysInWeek(i)[0];
+                              _selectedDay = CalendarUtils.getDaysInWeek(i)[0];
                             }
 
                             _selectedDay = _selectedDay;
@@ -339,7 +350,7 @@ class _SchedulePageViewState extends State<SchedulePageView> {
                                 .difference(_firstCalendarDay)
                                 .inDays;
                             _selectedWeek = i;
-                            _focusedDay = _validateFocusDay(_selectedDay);
+                            _focusedDay = _validateDayInRange(_selectedDay);
                             _controller.jumpToPage(_selectedPage);
                           });
                         },
@@ -370,11 +381,11 @@ class _SchedulePageViewState extends State<SchedulePageView> {
                       _selectedDay =
                           _selectedDay.subtract(const Duration(days: 1));
                     }
-                    final int currentNewWeek =
-                        Calendar.getCurrentWeek(mCurrentDate: _selectedDay);
+                    final int currentNewWeek = CalendarUtils.getCurrentWeek(
+                        mCurrentDate: _selectedDay);
                     _selectedWeek = currentNewWeek;
                   }
-                  _focusedDay = _validateFocusDay(_selectedDay);
+                  _focusedDay = _validateDayInRange(_selectedDay);
                   _selectedPage = value;
                 });
               },
@@ -383,9 +394,9 @@ class _SchedulePageViewState extends State<SchedulePageView> {
                 final DateTime lessonDay =
                     _firstCalendarDay.add(Duration(days: index));
                 final int week =
-                    Calendar.getCurrentWeek(mCurrentDate: lessonDay);
+                    CalendarUtils.getCurrentWeek(mCurrentDate: lessonDay);
                 final int lessonIndex =
-                    week >= 1 && week <= Calendar.kMaxWeekInSemester
+                    week >= 1 && week <= CalendarUtils.kMaxWeekInSemester
                         ? lessonDay.weekday - 1
                         : 6;
                 return _buildPageViewContent(context, lessonIndex, week);

@@ -97,7 +97,13 @@ class HomeFactory2 internal constructor(val context: Context, val intent: Intent
 //        print(scheduleData);
 //        print(weekData);
 
-        if (scheduleData != null && scheduleData.isNotEmpty() && weekData != null && weekData.isNotEmpty()) {
+        if (scheduleData != null &&
+            scheduleData.isNotEmpty() &&
+            weekData != null &&
+            weekData.isNotEmpty() &&
+            scheduleData!="null" &&
+            weekData.matches("\\d+".toRegex())
+        ) {
             val scheduleModel = Json.decodeFromString(ScheduleModel.serializer(), scheduleData)
             var week = weekData.toInt()
 

@@ -36,12 +36,12 @@ class _ProfileLectrosPageState extends State<ProfileLectrosPage> {
         MediaQuery.of(context).orientation == Orientation.portrait;
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Преподаватели',
-          style: DarkTextTheme.title,
-        ),
+        title: const Text("Преподаватели"),
+        backgroundColor: DarkThemeColors.background01,
       ),
+      backgroundColor: DarkThemeColors.background01,
       body: SafeArea(
+        bottom: false,
         child: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, authState) {
             if (authState is LogInSuccess) {

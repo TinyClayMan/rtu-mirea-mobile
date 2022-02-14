@@ -1,28 +1,33 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:rtu_mirea_app/common/utils/strapi_utils.dart';
 import 'package:rtu_mirea_app/domain/entities/news_item.dart';
 import 'package:intl/intl.dart';
 import 'package:rtu_mirea_app/presentation/colors.dart';
-import 'package:rtu_mirea_app/presentation/pages/news/news_details_page.dart';
+import 'package:rtu_mirea_app/presentation/core/routes/routes.gr.dart';
 import 'package:rtu_mirea_app/presentation/pages/news/widgets/tags_widgets.dart';
 import 'package:rtu_mirea_app/presentation/theme.dart';
 import 'package:shimmer/shimmer.dart';
 
 class NewsItemWidget extends StatelessWidget {
   final NewsItem newsItem;
+  final Function(String)? onClickNewsTag;
 
-  const NewsItemWidget({Key? key, required this.newsItem}) : super(key: key);
+  const NewsItemWidget({Key? key, required this.newsItem, this.onClickNewsTag})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => NewsDetailsPage(newsItem: newsItem),
-          ),
-        );
+        context.router.push(NewsDetailsRoute(
+          newsItem: newsItem,
+        ));
+        FirebaseAnalytics.instance.logEvent(name: 'view_news', parameters: {
+          'news_title': newsItem.title,
+        });
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 24, left: 16, right: 16),
@@ -38,7 +43,7 @@ class NewsItemWidget extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               ExtendedImage.network(
-                newsItem.images[0],
+                StrapiUtils.getMediumImageUrl(newsItem.images[0].formats),
                 height: 175,
                 width: MediaQuery.of(context).size.width,
                 fit: BoxFit.cover,
@@ -105,16 +110,19 @@ class NewsItemWidget extends StatelessWidget {
                 child: Text(newsItem.title,
                     textAlign: TextAlign.start, style: DarkTextTheme.titleM),
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: 4),
               Text((DateFormat.yMMMd('ru_RU').format(newsItem.date).toString()),
                   textAlign: TextAlign.start,
                   style: DarkTextTheme.captionL
                       .copyWith(color: DarkThemeColors.secondary)),
-              const SizedBox(height: 16),
+              newsItem.tags.isNotEmpty
+                  ? const SizedBox(height: 16)
+                  : Container(),
               Tags(
-                isClickable: false,
+                isClickable: true,
                 withIcon: false,
                 tags: newsItem.tags,
+                onClick: onClickNewsTag,
               ),
             ],
           ),

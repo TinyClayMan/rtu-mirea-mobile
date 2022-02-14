@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rtu_mirea_app/presentation/bloc/attendance_bloc/attendance_bloc.dart';
 import 'package:rtu_mirea_app/presentation/bloc/auth_bloc/auth_bloc.dart';
+import 'package:rtu_mirea_app/presentation/colors.dart';
 import 'package:rtu_mirea_app/presentation/pages/profile/widgets/attendance_card.dart';
 import 'package:rtu_mirea_app/presentation/theme.dart';
 import 'package:intl/intl.dart';
@@ -37,12 +38,12 @@ class _ProfileAttendancePageState extends State<ProfileAttendancePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Посещения',
-          style: DarkTextTheme.title,
-        ),
+        title: const Text("Посещаемость"),
+        backgroundColor: DarkThemeColors.background01,
       ),
+      backgroundColor: DarkThemeColors.background01,
       body: SafeArea(
+        bottom: false,
         child: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, authState) {
             if (authState is LogInSuccess) {
@@ -65,9 +66,10 @@ class _ProfileAttendancePageState extends State<ProfileAttendancePage> {
                   return Column(
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text('Промежуток: ', style: DarkTextTheme.body),
+                          const SizedBox(width: 16),
                           SelectRangeDateButton(
                             initialRange: PickerDateRange(
                                 _getFirstAndLastWeekDaysText()[0],
@@ -90,19 +92,31 @@ class _ProfileAttendancePageState extends State<ProfileAttendancePage> {
                       else if (state is AttendanceLoaded &&
                           state.attendance.isNotEmpty)
                         Expanded(
-                          child: ListView.builder(
-                            itemCount: state.attendance.length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 16, horizontal: 24),
-                                child: AttendanceCard(
-                                  type: state.attendance[index].eventType,
-                                  date: state.attendance[index].date,
-                                  time: state.attendance[index].time,
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 8),
+                              Text(
+                                  'Дней посещено: ' +
+                                      state.visitsCount.toString(),
+                                  style: DarkTextTheme.body),
+                              const SizedBox(height: 8),
+                              Expanded(
+                                child: ListView.builder(
+                                  itemCount: state.attendance.length,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 16, horizontal: 24),
+                                      child: AttendanceCard(
+                                        type: state.attendance[index].eventType,
+                                        date: state.attendance[index].date,
+                                        time: state.attendance[index].time,
+                                      ),
+                                    );
+                                  },
                                 ),
-                              );
-                            },
+                              ),
+                            ],
                           ),
                         ),
                       if (state is AttendanceLoaded && state.attendance.isEmpty)
