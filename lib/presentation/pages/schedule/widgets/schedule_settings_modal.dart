@@ -7,11 +7,9 @@ import 'package:rtu_mirea_app/presentation/theme.dart';
 import 'package:rtu_mirea_app/presentation/widgets/keyboard_positioned.dart';
 
 class ScheduleSettingsModal extends StatelessWidget {
-  const ScheduleSettingsModal(
-      {Key? key, required this.groups, required this.isFirstRun})
+  const ScheduleSettingsModal({Key? key, required this.isFirstRun})
       : super(key: key);
 
-  final List<String> groups;
   final bool isFirstRun;
 
   @override
@@ -21,11 +19,11 @@ class ScheduleSettingsModal extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(3.0),
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Padding(
+                const Padding(
                   padding: EdgeInsets.symmetric(vertical: 40),
                   child: Image(
                     image: AssetImage('assets/images/Saly-25.png'),
@@ -36,7 +34,7 @@ class ScheduleSettingsModal extends StatelessWidget {
                   isFirstRun ? "Настройте расписание" : "Выберите группу",
                   style: DarkTextTheme.h5,
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   isFirstRun
                       ? "Кажется, что это ваш первый запуск. Установите вашу учебную группу, чтобы начать пользоваться расписанием"
@@ -45,7 +43,7 @@ class ScheduleSettingsModal extends StatelessWidget {
                       .copyWith(color: DarkThemeColors.deactive),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Row(
                   children: [
                     Text(
@@ -56,14 +54,12 @@ class ScheduleSettingsModal extends StatelessWidget {
                     )
                   ],
                 ),
-                SizedBox(height: 8),
-                AutocompleteGroupSelector(
-                  groupsList: groups,
-                ),
-                SizedBox(height: 32),
+                const SizedBox(height: 8),
+                const AutocompleteGroupSelector(),
+                const SizedBox(height: 32),
                 ConstrainedBox(
-                  constraints:
-                      BoxConstraints.tightFor(width: double.infinity, height: 48),
+                  constraints: const BoxConstraints.tightFor(
+                      width: double.infinity, height: 48),
                   child: ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor:
@@ -77,7 +73,7 @@ class ScheduleSettingsModal extends StatelessWidget {
                     onPressed: () {
                       context
                           .read<ScheduleBloc>()
-                          .add(ScheduleSetActiveGroupEvent());
+                          .add(const ScheduleSetActiveGroupEvent());
                     },
                     child: Text(
                       'Начать',
@@ -87,7 +83,7 @@ class ScheduleSettingsModal extends StatelessWidget {
                 ),
               ],
             ),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: DarkThemeColors.background01,
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(25.0),
@@ -96,7 +92,7 @@ class ScheduleSettingsModal extends StatelessWidget {
           ),
         ),
         height: MediaQuery.of(context).size.height * 0.95,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
               DarkThemeColors.secondary,

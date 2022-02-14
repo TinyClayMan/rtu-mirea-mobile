@@ -23,20 +23,21 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
 
   @override
   Future<Either<Failure, List<String>>> getAllGroups() async {
+    connectionChecker.checkInterval = const Duration(seconds: 2);
     if (await connectionChecker.hasConnection) {
       try {
         final groupsList = await remoteDataSource.getGroups();
         localDataSource.setGroupsToCache(groupsList);
         return Right(groupsList);
       } on ServerException {
-        return Left(ServerFailure());
+        return const Left(ServerFailure());
       }
     } else {
       try {
         final localGroupsList = await localDataSource.getGroupsFromCache();
         return Right(localGroupsList);
       } on CacheException {
-        return Left(CacheFailure());
+        return const Left(CacheFailure());
       }
     }
   }
@@ -50,14 +51,13 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
         }
       }
       // If the group is not downloaded
-      return Left(CacheFailure());
+      return const Left(CacheFailure());
     } on CacheException {
-      return Left(CacheFailure());
+      return const Left(CacheFailure());
     }
   }
 
-  @override
-  Future<Either<Failure, Schedule>> getSchedule(String group) async {
+  Future<Either<Failure, Schedule>> _tryGetRemoteSchedule(String group) async {
     if (await connectionChecker.hasConnection) {
       try {
         final ScheduleModel schedule =
@@ -88,6 +88,16 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
         if (localSchedule.isRight()) return localSchedule;
         return Left(ServerFailure());
       }
+    } else {
+      return await _tryGetLocalSchedule(group);
+    }
+  }
+
+  @override
+  Future<Either<Failure, Schedule>> getSchedule(
+      String group, bool fromRemote) async {
+    if (fromRemote) {
+      return await _tryGetRemoteSchedule(group);
     } else {
       return await _tryGetLocalSchedule(group);
     }
@@ -140,7 +150,7 @@ class ScheduleRepositoryImpl implements ScheduleRepository {
       final localSettings = await localDataSource.getSettingsFromCache();
       return localSettings;
     } on CacheException {
-      final newLocalSettings = ScheduleSettingsModel(
+      const newLocalSettings = ScheduleSettingsModel(
         showEmptyLessons: false,
         showLessonsNumbers: false,
         calendarFormat: 2,

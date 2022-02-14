@@ -19,7 +19,7 @@ class ScheduleInitial extends ScheduleState {}
 class ScheduleActiveGroupEmpty extends ScheduleState {
   final List<String> groups;
 
-  ScheduleActiveGroupEmpty({required this.groups});
+  const ScheduleActiveGroupEmpty({required this.groups});
 
   @override
   List<Object> get props => [groups];
@@ -33,31 +33,24 @@ class ScheduleLoaded extends ScheduleState {
   final Schedule schedule;
   final String activeGroup;
   final List<String> downloadedScheduleGroups;
-  final List<String> groups;
   final ScheduleSettings scheduleSettings;
 
-  ScheduleLoaded({
+  const ScheduleLoaded({
     required this.schedule,
     required this.activeGroup,
     required this.downloadedScheduleGroups,
-    required this.groups,
     required this.scheduleSettings,
   });
 
   @override
-  List<Object> get props => [
-        schedule,
-        activeGroup,
-        downloadedScheduleGroups,
-        groups,
-        scheduleSettings
-      ];
+  List<Object> get props =>
+      [schedule, activeGroup, downloadedScheduleGroups, scheduleSettings];
 }
 
 class ScheduleLoadError extends ScheduleState {
   final String errorMessage;
 
-  ScheduleLoadError({required this.errorMessage});
+  const ScheduleLoadError({required this.errorMessage});
 
   @override
   List<Object> get props => [errorMessage];
